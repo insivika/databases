@@ -9,13 +9,19 @@ const con = mysql.createConnection({
   user: 'root',
   password: 'password',
   database: 'chat',
+  debug: true,
   insecureAuth: true
 });
 
 con.connect((err) =>{
+  console.log('Attempting to connect..');
   if (err) { throw err; }
 
   console.log('Connected!');
+});
+
+con.on('error', (err) => {
+  console.error('A mysql error has : ', err);
 });
 
 module.exports = con;
