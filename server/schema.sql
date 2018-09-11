@@ -9,13 +9,13 @@ DROP TABLE IF EXISTS `messages`;
 
 CREATE TABLE `messages` (
 
-  `id` INTEGER AUTO_INCREMENT NOT NULL, 
-  `username` VARCHAR(255) NOT NULL, 
-  `roomname` VARCHAR(255) NOT NULL, 
-  `body` MEDIUMTEXT NOT NULL, 
+  `id` INTEGER AUTO_INCREMENT NOT NULL,
+  `username` VARCHAR(255) NOT NULL,
+  `roomname` VARCHAR(255) NOT NULL,
+  `text` MEDIUMTEXT NOT NULL,
   `created_at` TIMESTAMP NOT NULL  DEFAULT CURRENT_TIMESTAMP,
   PRIMARY KEY(`id`)
-       
+
 );
 
 /* Create other tables and define schemas for them here! */

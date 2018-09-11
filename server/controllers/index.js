@@ -6,7 +6,7 @@ module.exports = {
     get: function (req, res) { // a function which handles a get request for all messages
       models.messages.get().then((results) => {
         console.log('results received: ', results);
-        debugger;
+        // debugger;
         res.writeHead(200, {
           'Content-Type': 'application/json'
         });
@@ -15,13 +15,31 @@ module.exports = {
         console.log('err occurred when fetching messages: ', err);
       });
     },
-    post: function (req, res) {} // a function which handles posting a message to the database
+    post: function (req, res) { // a function which handles posting a message to the database
+      // get the body..
+      models.messages.post(req.body).then(() => {
+        res.writeHead(201, {
+          'Content-Type': 'application/json'
+        });
+        res.end();
+      }).catch((err) => {
+        console.log('err occurred when posting message: ', err);
+      });
+      // debugger;
+    }
+
   },
 
   users: {
     // Ditto as above
-    get: function (req, res) {},
-    post: function (req, res) {}
+    get: function (req, res) {
+    },
+    post: function (req, res) {
+      res.writeHead(201, {
+        'Content-Type': 'application/json'
+      });
+      res.end('{}');
+    }
   }
 };
 
