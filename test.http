@@ -1,0 +1,8 @@
+POST http://localhost:3000/classes/messages/
+content-type: application/json
+
+{
+	"username": "tom",
+	"roomname": "lobby",
+  "body": "hows it goin\" anne?"
+}
