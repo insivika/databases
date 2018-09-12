@@ -1,10 +1,17 @@
-POST http://localhost:3000/classes/messages/
+# POST http://localhost:3000/classes/messages/
+# content-type: application/json
+
+# {
+# 	"username": "Tom",
+# 	"roomname": "lobby",
+#   "text": "hows it goin\" anne?"
+# }
+
+POST http://localhost:3000/classes/users/
 content-type: application/json
 
 {
-	"username": "Tom",
-	"roomname": "lobby",
-  "text": "hows it goin\" anne?"
+	"username": "Frank"
 }
 
 # POST http://localhost:3000/classes/messages/

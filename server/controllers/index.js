@@ -35,10 +35,20 @@ module.exports = {
     get: function (req, res) {
     },
     post: function (req, res) {
-      res.writeHead(201, {
-        'Content-Type': 'application/json'
+      models.users.post(req.body).then((message) => {
+        res.writeHead(201, {
+          'Content-Type': 'application/json'
+        });
+        console.log(message);
+        res.end();
+      }).catch((err) => {
+        console.log('err occurred when creating user: ', err);
+        res.writeHead(405, {
+          'Content-Type': 'application/json'
+        });
+        res.end(JSON.stringify({error: err}));
       });
-      res.end('{}');
+      // debugger;
     }
   }
 };

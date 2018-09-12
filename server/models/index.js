@@ -20,12 +20,11 @@ module.exports = {
         // first look up user_id in our `users` table
         db.query('SELECT id FROM users WHERE username = ?', [body.username], (err, results) => {
           // if sql err return err
-          debugger;
           if (err) {
             reject(err);
           } else if (results.length === 0) {
             // user didnt exist
-            reject(err);
+            reject('User doesn\'t exist');
           } else {
             // if found, get user id from 1st result
             const userId = results[0].id;
@@ -48,7 +47,29 @@ module.exports = {
 
   users: {
     // Ditto as above.
-    get: function () {},
-    post: function () {}
+    get: function () {
+
+    },
+    post: function (body) {
+      return new Promise((resolve, reject) => {
+        db.query('SELECT COUNT(id) FROM users WHERE username = ?', [body.username], (error, results) => {
+          if (error) {
+            reject(error);
+          } else if (results[0]['COUNT(id)'] > 0) {
+            reject('User already exists');
+          } else {
+
+            db.query('INSERT INTO users (username) VALUES (?)', [body.username], (error, results) => {
+              if (error) {
+                reject(error);
+              } else {
+                resolve(body.username + ' has been added.');
+              }
+            });
+          }
+        });
+
+      });
+    }
   }
 };

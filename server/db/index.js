@@ -9,7 +9,7 @@ const con = mysql.createConnection({
   user: 'root',
   password: 'password',
   database: 'chat',
-  debug: true,
+  debug: false,
   insecureAuth: true
 });
 
