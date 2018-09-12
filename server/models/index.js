@@ -17,18 +17,32 @@ module.exports = {
     }, // a function which produces all the messages
     post: function (body) {
       return new Promise((resolve, reject) => {
-        db.query('INSERT INTO messages (username, roomname, text) VALUES (?,?,?)', [
-          body.username, body.roomname, body.text
-        ], (err, results) => {
+        // first look up user_id in our `users` table
+        db.query('SELECT id FROM users WHERE username = ?', [body.username], (err, results) => {
+          // if sql err return err
+          debugger;
           if (err) {
             reject(err);
-            throw err;
+          } else if (results.length === 0) {
+            // user didnt exist
+            reject(err);
           } else {
-            resolve(results);
+            // if found, get user id from 1st result
+            const userId = results[0].id;
+            db.query('INSERT INTO messages (user_id, roomname, text) VALUES (?,?,?)', [
+              userId, body.roomname, body.text
+            ], (err, results) => {
+              if (err) {
+                reject(err);
+                throw err;
+              } else {
+                resolve(results);
+              }
+            });
           }
         });
+        // SELECT `user_id` FROM users WHERE body.username = username
       });
-
     } // a function which can be used to insert a message into the database
   },
 

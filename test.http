@@ -2,7 +2,16 @@ POST http://localhost:3000/classes/messages/
 content-type: application/json
 
 {
-	"username": "tom",
+	"username": "Tom",
 	"roomname": "lobby",
-  "body": "hows it goin\" anne?"
+  "text": "hows it goin\" anne?"
 }
+
+# POST http://localhost:3000/classes/messages/
+# content-type: application/json
+
+# {
+# 	"username": "cindy",
+# 	"roomname": "lobby",
+#   "body": "hows it goin\" anne?"
+# }
