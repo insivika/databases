@@ -51,25 +51,38 @@ module.exports = {
 
     },
     post: function (body) {
-      return new Promise((resolve, reject) => {
-        db.query('SELECT COUNT(id) FROM users WHERE username = ?', [body.username], (error, results) => {
-          if (error) {
-            reject(error);
-          } else if (results[0]['COUNT(id)'] > 0) {
-            reject('User already exists');
-          } else {
 
-            db.query('INSERT INTO users (username) VALUES (?)', [body.username], (error, results) => {
-              if (error) {
-                reject(error);
+      return user.sync()
+        .then(() => {
+          return user.count({where: {username: body.username}})
+            .then((count) => {
+              if (count > 0) {
+                throw 'user already exists';
               } else {
-                resolve(body.username + ' has been added.');
+                return user.create({username: body.username});
               }
             });
-          }
         });
 
-      });
+      // return new Promise((resolve, reject) => {
+      //   db.query('SELECT COUNT(id) FROM users WHERE username = ?', [body.username], (error, results) => {
+      //     if (error) {
+      //       reject(error);
+      //     } else if (results[0]['COUNT(id)'] > 0) {
+      //       reject('User already exists');
+      //     } else {
+
+      //       db.query('INSERT INTO users (username) VALUES (?)', [body.username], (error, results) => {
+      //         if (error) {
+      //           reject(error);
+      //         } else {
+      //           resolve(body.username + ' has been added.');
+      //         }
+      //       });
+      //     }
+      //   });
+
+      // });
     }
   }
 };

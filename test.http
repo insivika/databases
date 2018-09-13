@@ -2,16 +2,16 @@ POST http://localhost:3000/classes/messages/
 content-type: application/json
 
 {
-	"username": "dfdsf",
+	"username": "Marry Poppins",
 	"roomname": "main",
-  "text": "how yall doin?"
+  "text": "whats poppin? me!"
 }
 
 # POST http://localhost:3000/classes/users/
 # content-type: application/json
 
 # {
-# 	"username": "Frank"
+# 	"username": "Marry Poppins"
 # }
 
 # POST http://localhost:3000/classes/messages/
