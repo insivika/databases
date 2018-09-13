@@ -5,7 +5,8 @@ module.exports = {
   messages: {
     get: function () {
       return new Promise((resolve, reject) => {
-        db.query('SELECT * FROM users INNER JOIN messages ON messages.user_id = users.id', (err, results) => {
+        db.query('SELECT * FROM users INNER JOIN messages ' +
+        'ON messages.user_id = users.id ORDER BY messages.id ASC', (err, results) => {
           if (err) {
             reject(err);
             throw err;
