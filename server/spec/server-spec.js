@@ -99,5 +99,6 @@ describe('Persistent Node Chat Server', function() {
   it('Should return messages in the correct order');
   it('Should reject new users if username is not unique');
   it('should supply an object id + createdAt on server');
+  it('Makes freaking emojis work!!! 🤞🏽');
 
 });
