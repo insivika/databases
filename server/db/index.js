@@ -1,5 +1,5 @@
 const Sequelize = require('sequelize');
-const db = new Sequelize('chat', 'root', 'password');
+const db = new Sequelize('chat', 'root', 'password', {logging: false});
 
 const user = db.define('user',
   {

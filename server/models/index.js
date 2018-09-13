@@ -10,43 +10,39 @@ module.exports = {
 
           return message.findAll({include: [user]}).then((results) => {
             return results.map((row) => {
-              row = row.dataValues;
-              row.username = row.user.dataValues.username;
+              row = row.get();
+              row.username = row.user.get('username');
               delete row.user;
               return row;
             });
           });
 
         });
-    }, // a function which produces all the messages
+    },
+
+
+
     post: function (body) {
-      return new Promise((resolve, reject) => {
-        // first look up user_id in our `users` table
-        db.query('SELECT id FROM users WHERE username = ?', [body.username], (err, results) => {
-          // if sql err return err
-          if (err) {
-            reject(err);
-          } else if (results.length === 0) {
-            // user didnt exist
-            reject('User doesn\'t exist');
-          } else {
-            // if found, get user id from 1st result
-            const userId = results[0].id;
-            db.query('INSERT INTO messages (user_id, roomname, text) VALUES (?,?,?)', [
-              userId, body.roomname, body.text
-            ], (err, results) => {
-              if (err) {
-                reject(err);
-                throw err;
+
+      return message.sync()
+        .then(() => {
+
+          return user.find({where: {username: body.username}})
+            .then((user) => {
+              if (user) {
+                return message.create(
+                  {
+                    'user_id': user.get('id'),
+                    roomname: body.roomname,
+                    text: body.text
+                  }
+                );
               } else {
-                resolve(results);
+                throw ('user doesn\'t exist');
               }
             });
-          }
         });
-        // SELECT `user_id` FROM users WHERE body.username = username
-      });
-    } // a function which can be used to insert a message into the database
+    }
   },
 
   users: {
