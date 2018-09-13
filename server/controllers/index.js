@@ -1,5 +1,4 @@
 var models = require('../models/index.js');
-var db = require('../db/index.js');
 
 module.exports = {
   messages: {

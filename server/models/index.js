@@ -1,20 +1,23 @@
-var db = require('../db/index.js');
+const {db, user, message} = require('../db/index.js');
 
 
 module.exports = {
   messages: {
     get: function () {
-      return new Promise((resolve, reject) => {
-        db.query('SELECT * FROM users INNER JOIN messages ' +
-        'ON messages.user_id = users.id ORDER BY messages.id ASC', (err, results) => {
-          if (err) {
-            reject(err);
-            throw err;
-          } else {
-            resolve(results);
-          }
+
+      return message.sync()
+        .then(() => {
+
+          return message.findAll({include: [user]}).then((results) => {
+            return results.map((row) => {
+              row = row.dataValues;
+              row.username = row.user.dataValues.username;
+              delete row.user;
+              return row;
+            });
+          });
+
         });
-      });
     }, // a function which produces all the messages
     post: function (body) {
       return new Promise((resolve, reject) => {
