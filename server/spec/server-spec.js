@@ -88,4 +88,16 @@ describe('Persistent Node Chat Server', function() {
       });
     });
   });
+
+  // critical
+  it('Should reject posts that are not objects');
+  it('Should get all users from the database');
+  it('Should reject messages that dont have username + text supplied');
+  it('Should put message in lobby if no room given');
+
+  // supplementary
+  it('Should return messages in the correct order');
+  it('Should reject new users if username is not unique');
+  it('should supply an object id + createdAt on server');
+
 });
