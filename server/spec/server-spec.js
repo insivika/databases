@@ -90,8 +90,48 @@ describe('Persistent Node Chat Server', function() {
   });
 
   // critical
-  it('Should reject posts that are not objects');
-  it('Should get all users from the database');
+  it('Should reject posts that are not objects', (done) => {
+    request({
+      method: 'POST',
+      uri: 'http://127.0.0.1:3000/classes/messages',
+      body: 'This is not an object'
+    }, (err, response, body) => {
+      const errObject = JSON.parse(body);
+      expect(errObject.error).to.equal('Not Valid Message.');
+      done();
+    }).on('response', function(response) {
+      expect(response.statusCode).to.equal(405);
+    });
+  });
+
+  it('Should get all users from the database', (done) => {
+
+    var queryString = 'INSERT INTO users (username) VALUES ("bob-test-1234")';
+
+    const deleteUser = () => {
+      var deleteString = 'DELETE FROM users WHERE username = "bob-test-1234"';
+      dbConnection.query(deleteString, (err) => {
+        if (err) { console.log('Could not delete test user.'); }
+      });
+    };
+
+    dbConnection.query(queryString, (err) => {
+      if (err) { throw err; }
+
+      request('http://127.0.0.1:3000/classes/users', function(error, response, body) {
+        try {
+          var userLog = JSON.parse(body);
+          expect(userLog[userLog.length - 1].username).to.equal('bob-test-1234');
+          deleteUser();
+          done();
+        } catch (e) {
+          console.log(e);
+          deleteUser();
+          throw e;
+        }
+      });
+    });
+  });
   it('Should reject messages that dont have username + text supplied');
   it('Should put message in lobby if no room given');
 
