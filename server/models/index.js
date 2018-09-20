@@ -4,7 +4,6 @@ const {db, user, message} = require('../db/index.js');
 module.exports = {
   messages: {
     get: function () {
-
       return message.sync()
         .then(() => {
 
@@ -16,17 +15,15 @@ module.exports = {
               return row;
             });
           });
-
         });
     },
 
-
-
     post: function (body) {
-
+      if (Object.keys(body).length === 0) {
+        return new Promise( (resolve, reject) => { reject('Not Valid Message.'); });
+      }
       return message.sync()
         .then(() => {
-
           return user.find({where: {username: body.username}})
             .then((user) => {
               if (user) {
@@ -47,8 +44,11 @@ module.exports = {
 
   users: {
     // Ditto as above.
-    get: function () {
-
+    get: function() {
+      return user.sync()
+        .then(() => {
+          return user.findAll();
+        });
     },
     post: function (body) {
 
