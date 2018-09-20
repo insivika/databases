@@ -15,6 +15,7 @@ const App = function () {
 App.prototype.init = function () {
   var urlParams = new URLSearchParams(window.location.search);
   this.userName = urlParams.get('username');
+  this.createUser(this.userName);
   console.log('Hello ', this.userName);
   this.setUpUI();
 
@@ -22,6 +23,16 @@ App.prototype.init = function () {
     this.fetch();
   }, this.delay);
   this.fetch();
+};
+
+App.prototype.createUser = function(user) {
+  axios.post('/classes/users', {
+    username: user
+  }).then( (resp) => {
+    console.log(`User '${user}' has been created`);
+  }).catch( (err) => {
+    console.log('An err occurred when trying to create user: ', err);
+  });
 };
 
 App.prototype.setUpUI = function () {

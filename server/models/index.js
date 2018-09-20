@@ -1,48 +1,48 @@
-var db = require('../db/index.js');
+const {db, user, message} = require('../db/index.js');
 
 
 module.exports = {
   messages: {
     get: function () {
-      return new Promise((resolve, reject) => {
-        db.query('SELECT * FROM users INNER JOIN messages ON messages.user_id = users.id', (err, results) => {
-          if (err) {
-            reject(err);
-            throw err;
-          } else {
-            resolve(results);
-          }
+
+      return message.sync()
+        .then(() => {
+
+          return message.findAll({include: [user]}).then((results) => {
+            return results.map((row) => {
+              row = row.get();
+              row.username = row.user.get('username');
+              delete row.user;
+              return row;
+            });
+          });
+
         });
-      });
-    }, // a function which produces all the messages
+    },
+
+
+
     post: function (body) {
-      return new Promise((resolve, reject) => {
-        // first look up user_id in our `users` table
-        db.query('SELECT id FROM users WHERE username = ?', [body.username], (err, results) => {
-          // if sql err return err
-          if (err) {
-            reject(err);
-          } else if (results.length === 0) {
-            // user didnt exist
-            reject('User doesn\'t exist');
-          } else {
-            // if found, get user id from 1st result
-            const userId = results[0].id;
-            db.query('INSERT INTO messages (user_id, roomname, text) VALUES (?,?,?)', [
-              userId, body.roomname, body.text
-            ], (err, results) => {
-              if (err) {
-                reject(err);
-                throw err;
+
+      return message.sync()
+        .then(() => {
+
+          return user.find({where: {username: body.username}})
+            .then((user) => {
+              if (user) {
+                return message.create(
+                  {
+                    'user_id': user.get('id'),
+                    roomname: body.roomname,
+                    text: body.text
+                  }
+                );
               } else {
-                resolve(results);
+                throw ('user doesn\'t exist');
               }
             });
-          }
         });
-        // SELECT `user_id` FROM users WHERE body.username = username
-      });
-    } // a function which can be used to insert a message into the database
+    }
   },
 
   users: {
@@ -51,25 +51,38 @@ module.exports = {
 
     },
     post: function (body) {
-      return new Promise((resolve, reject) => {
-        db.query('SELECT COUNT(id) FROM users WHERE username = ?', [body.username], (error, results) => {
-          if (error) {
-            reject(error);
-          } else if (results[0]['COUNT(id)'] > 0) {
-            reject('User already exists');
-          } else {
 
-            db.query('INSERT INTO users (username) VALUES (?)', [body.username], (error, results) => {
-              if (error) {
-                reject(error);
+      return user.sync()
+        .then(() => {
+          return user.count({where: {username: body.username}})
+            .then((count) => {
+              if (count > 0) {
+                throw 'user already exists';
               } else {
-                resolve(body.username + ' has been added.');
+                return user.create({username: body.username});
               }
             });
-          }
         });
 
-      });
+      // return new Promise((resolve, reject) => {
+      //   db.query('SELECT COUNT(id) FROM users WHERE username = ?', [body.username], (error, results) => {
+      //     if (error) {
+      //       reject(error);
+      //     } else if (results[0]['COUNT(id)'] > 0) {
+      //       reject('User already exists');
+      //     } else {
+
+      //       db.query('INSERT INTO users (username) VALUES (?)', [body.username], (error, results) => {
+      //         if (error) {
+      //           reject(error);
+      //         } else {
+      //           resolve(body.username + ' has been added.');
+      //         }
+      //       });
+      //     }
+      //   });
+
+      // });
     }
   }
 };

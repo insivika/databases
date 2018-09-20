@@ -1,9 +1,12 @@
 var models = require('../models/index.js');
+var db = require('../db/index.js');
 
 module.exports = {
   messages: {
     get: function (req, res) { // a function which handles a get request for all messages
       models.messages.get().then((results) => {
+        console.log('results received: ', results);
+        // debugger;
         res.writeHead(200, {
           'Content-Type': 'application/json'
         });
@@ -22,7 +25,9 @@ module.exports = {
       }).catch((err) => {
         console.log('err occurred when posting message: ', err);
       });
+      // debugger;
     }
+
   },
 
   users: {
@@ -34,6 +39,7 @@ module.exports = {
         res.writeHead(201, {
           'Content-Type': 'application/json'
         });
+        console.log(message);
         res.end();
       }).catch((err) => {
         console.log('err occurred when creating user: ', err);
@@ -42,6 +48,7 @@ module.exports = {
         });
         res.end(JSON.stringify({error: err}));
       });
+      // debugger;
     }
   }
 };
